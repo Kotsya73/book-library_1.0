@@ -1,5 +1,6 @@
 package com.library.service;
 
+import com.library.exception.LibraryException;
 import com.library.model.Book;
 import com.library.model.BookStatus;
 import com.library.model.Reader;
@@ -27,6 +28,38 @@ public class LibraryService {
         readerBooks.put(readerCounterForID, new ArrayList<>());
 
         readerCounterForID++;
+    }
+
+    public void borrowBook(Long bookID, Long readerID){
+        var book = findBookOrThrow(bookID);
+        var reader = findReaderOrThrow(readerID);
+
+        if(book.getStatus() == BookStatus.BORROWED){
+            throw new LibraryException("Book is already borrowed");
+        }
+        List<Long> booksThatReaderHave = readerBooks.get(readerID);
+        if(booksThatReaderHave.size() >= 3){
+            throw new LibraryException("Reader already have max amount of books!");
+        }
+        book.setStatus(BookStatus.BORROWED);
+        book.setBorrowedByID(reader.getID());
+        booksThatReaderHave.add(book.getId());
+    }
+
+    private Book findBookOrThrow(Long bookID){
+        var book = bookStorage.get(bookID);
+        if(book == null) {
+            throw new LibraryException("Book with ID" + bookID + " not found");
+        }
+        return book;
+    }
+
+    private Reader findReaderOrThrow(Long readerID){
+        var reader = readerStorage.get(readerID);
+        if(reader == null){
+            throw  new LibraryException("Reader with ID" + readerID + " not found");
+        }
+        return reader;
     }
 }
 
