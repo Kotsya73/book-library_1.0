@@ -62,6 +62,25 @@ public class LibraryService {
         booksThatReaderHave.remove(book.getId());
     }
 
+    public List<Book> findBooksByAuthor(String author){
+        return bookStorage.values().stream()
+                .filter(book -> book.getAuthor().equals(author))
+                .toList();
+    }
+
+    public List<Book> findAvailableBooks(){
+        return bookStorage.values().stream()
+                .filter(book -> book.getStatus() == BookStatus.AVAILABLE)
+                .toList();
+    }
+
+    public List<Book> findBooksThatReaderHave(Long readerID){
+        return bookStorage.values().stream()
+                .filter(book -> book.getStatus() == BookStatus.BORROWED &&
+                        book.getBorrowedByID().equals(readerID))
+                .toList();
+    }
+
     private Book findBookOrThrow(Long bookID){
         var book = bookStorage.get(bookID);
         if(book == null) {
