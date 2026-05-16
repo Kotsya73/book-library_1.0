@@ -46,6 +46,22 @@ public class LibraryService {
         booksThatReaderHave.add(book.getId());
     }
 
+    public void returnBook(Long bookID, Long readerID){
+        var book = findBookOrThrow(bookID);
+        var reader = findReaderOrThrow(readerID);
+
+        if (book.getStatus() == BookStatus.AVAILABLE){
+            throw new LibraryException("Book is already available!");
+        }
+        if(!book.getBorrowedByID().equals(reader.getID())){
+            throw new LibraryException("Book is not borrowed by this reader!");
+        }
+        book.setStatus(BookStatus.AVAILABLE);
+        book.setBorrowedByID(null);
+        List<Long> booksThatReaderHave = readerBooks.get(readerID);
+        booksThatReaderHave.remove(book.getId());
+    }
+
     private Book findBookOrThrow(Long bookID){
         var book = bookStorage.get(bookID);
         if(book == null) {
