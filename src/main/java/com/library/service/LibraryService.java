@@ -1,6 +1,7 @@
 package com.library.service;
 
 import com.library.model.Book;
+import com.library.model.BookStatus;
 import com.library.model.Reader;
 
 import java.util.*;
@@ -14,5 +15,18 @@ public class LibraryService {
     private long bookCounterForID = 1;
     private long readerCounterForID = 1;
 
+    public void addBook(String title, String author){
+        Book book= new Book(bookCounterForID, title, author, BookStatus.AVAILABLE);
+        bookStorage.put (book.getId(), book);
+        bookCounterForID ++;
+    }
+
+    public void registerReader(String name){
+        Reader reader = new Reader(readerCounterForID, name);
+        readerStorage.put(readerCounterForID, reader);
+        readerBooks.put(readerCounterForID, new ArrayList<>());
+
+        readerCounterForID++;
+    }
 }
 
