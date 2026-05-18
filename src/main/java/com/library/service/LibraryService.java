@@ -96,5 +96,13 @@ public class LibraryService {
         }
         return reader;
     }
+
+    public Book getBookByID(Long id){
+        return  bookStorage.get(id);
+    }
+
+    public Reader getReaderByID(Long id){
+        return readerStorage.get(id);
+    }
 }
 
