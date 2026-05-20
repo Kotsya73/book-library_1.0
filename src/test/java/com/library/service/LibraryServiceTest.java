@@ -89,4 +89,45 @@ class LibraryServiceTest {
 
         assertThrows(LibraryException.class, () -> library.borrowBook(book4.getId(), reader.getID()));
     }
+
+    @Test
+    void returnBook_shouldChangeStatus(){
+        library.addBook("1984", "George Orwell");
+        Book book = library.getBookByID(1L);
+        library.registerReader("Adelina");
+        Reader reader = library.getReaderByID(1L);
+        library.borrowBook(book.getId(), reader.getID());
+        library.returnBook(book.getId(), reader.getID());
+
+        assertEquals(BookStatus.AVAILABLE, book.getStatus());
+    }
+
+    @Test
+    void returnBook_shouldThrowExceptionStatus(){
+        library.addBook("1984", "George Orwell");
+        Book book1 = library.getBookByID(1L);
+        library.addBook("On the Origin of Species", "Charles Darwin");
+        Book book2 = library.getBookByID(2L);
+        library.registerReader("Adelina");
+        Reader reader = library.getReaderByID(1L);
+        library.borrowBook(book1.getId(), reader.getID());
+
+        assertThrows(LibraryException.class, () -> library.returnBook(book2.getId(), reader.getID()));
+    }
+
+    @Test
+    void returnBook_shouldThrowExceptionReader(){
+        library.addBook("1984", "George Orwell");
+        Book book1 = library.getBookByID(1L);
+        library.registerReader("Adelina");
+        Reader reader1 = library.getReaderByID(1L);
+        library.registerReader("Nick");
+        Reader reader2 = library.getReaderByID(2L);
+
+        library.borrowBook(book1.getId(), reader1.getID());
+
+        assertThrows(LibraryException.class, () -> library.returnBook(book1.getId(), reader2.getID()));
+    }
+
+
 }
