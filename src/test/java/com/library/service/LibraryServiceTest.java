@@ -100,6 +100,7 @@ class LibraryServiceTest {
         library.returnBook(book.getId(), reader.getID());
 
         assertEquals(BookStatus.AVAILABLE, book.getStatus());
+        assertNull(book.getBorrowedByID());
     }
 
     @Test
@@ -129,5 +130,59 @@ class LibraryServiceTest {
         assertThrows(LibraryException.class, () -> library.returnBook(book1.getId(), reader2.getID()));
     }
 
+    @Test
+    void findBooksByAuthor_shouldBeRightSize(){
+        library.addBook("1984", "George Orwell");
+        Book book1 = library.getBookByID(1L);
+        library.addBook("Animal Farm", "George Orwell");
+        Book book2 = library.getBookByID(2L);
 
+        assertEquals(2, library.findBooksByAuthor("George Orwell").size());
+    }
+
+    @Test
+    void findAvailableBooks_shouldBeRightSize(){
+        library.addBook("1984", "George Orwell");
+        Book book1 = library.getBookByID(1L);
+        library.addBook("Animal Farm", "George Orwell");
+        Book book2 = library.getBookByID(2L);
+        library.addBook("On the Origin of Species", "Charles Darwin");
+        Book book3 = library.getBookByID(3L);
+        library.registerReader("Adelina");
+        Reader reader1 = library.getReaderByID(1L);
+        library.borrowBook(book3.getId(), reader1.getID());
+
+        assertEquals(2, library.findAvailableBooks().size());
+    }
+
+    @Test
+    void findBooksThatReaderHave_shouldBeRightSize(){
+        library.addBook("1984", "George Orwell");
+        Book book1 = library.getBookByID(1L);
+        library.addBook("Animal Farm", "George Orwell");
+        Book book2 = library.getBookByID(2L);
+        library.addBook("On the Origin of Species", "Charles Darwin");
+        Book book3 = library.getBookByID(3L);
+        library.registerReader("Adelina");
+        Reader reader1 = library.getReaderByID(1L);
+        library.borrowBook(book1.getId(), reader1.getID());
+        library.borrowBook(book2.getId(), reader1.getID());
+
+        assertEquals(2, library.findBooksThatReaderHave(reader1.getID()).size());
+    }
+
+    @Test
+    void findBookOrThrow_shouldThrowException(){
+        library.registerReader("Adelina");
+        Reader reader1 = library.getReaderByID(1L);
+
+        assertThrows(LibraryException.class, () -> library.borrowBook(1L, reader1.getID()));
+    }
+
+    @Test
+    void findReaderOrThrow_shouldThrowException(){
+        library.addBook("1984", "George Orwell");
+        Book book = library.getBookByID(1L);
+        assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), 1L));
+    }
 }
