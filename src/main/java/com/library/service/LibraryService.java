@@ -17,7 +17,7 @@ public class LibraryService {
     private long readerCounterForID = 1;
 
     public void addBook(String title, String author){
-        Book book= new Book(bookCounterForID, title, author, BookStatus.AVAILABLE);
+        Book book= new Book(bookCounterForID, title, author, BookStatus.AVAILABLE, null);
         bookStorage.put (book.getId(), book);
         bookCounterForID ++;
     }
@@ -42,7 +42,7 @@ public class LibraryService {
             throw new LibraryException("Reader already have max amount of books!");
         }
         book.setStatus(BookStatus.BORROWED);
-        book.setBorrowedByID(reader.getID());
+        book.setBorrowedByID(reader.getId());
         booksThatReaderHave.add(book.getId());
     }
 
@@ -53,7 +53,7 @@ public class LibraryService {
         if (book.getStatus() == BookStatus.AVAILABLE){
             throw new LibraryException("Book is already available!");
         }
-        if(!book.getBorrowedByID().equals(reader.getID())){
+        if(!book.getBorrowedByID().equals(reader.getId())){
             throw new LibraryException("Book is not borrowed by this reader!");
         }
         book.setStatus(BookStatus.AVAILABLE);

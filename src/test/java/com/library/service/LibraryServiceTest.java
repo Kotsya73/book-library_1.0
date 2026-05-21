@@ -52,7 +52,7 @@ class LibraryServiceTest {
         Book book = library.getBookByID(1L);
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
-        library.borrowBook(book.getId(), reader.getID());
+        library.borrowBook(book.getId(), reader.getId());
 
         assertEquals(BookStatus.BORROWED, book.getStatus());
     }
@@ -65,9 +65,9 @@ class LibraryServiceTest {
         library.registerReader("Nick");
         Reader reader1 = library.getReaderByID(1L);
         Reader reader2 = library.getReaderByID(2L);
-        library.borrowBook(book.getId(), reader1.getID());
+        library.borrowBook(book.getId(), reader1.getId());
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), reader2.getID()));
+        assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), reader2.getId()));
     }
 
     @Test
@@ -83,11 +83,11 @@ class LibraryServiceTest {
 
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
-        library.borrowBook(book1.getId(), reader.getID());
-        library.borrowBook(book2.getId(), reader.getID());
-        library.borrowBook(book3.getId(), reader.getID());
+        library.borrowBook(book1.getId(), reader.getId());
+        library.borrowBook(book2.getId(), reader.getId());
+        library.borrowBook(book3.getId(), reader.getId());
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(book4.getId(), reader.getID()));
+        assertThrows(LibraryException.class, () -> library.borrowBook(book4.getId(), reader.getId()));
     }
 
     @Test
@@ -96,8 +96,8 @@ class LibraryServiceTest {
         Book book = library.getBookByID(1L);
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
-        library.borrowBook(book.getId(), reader.getID());
-        library.returnBook(book.getId(), reader.getID());
+        library.borrowBook(book.getId(), reader.getId());
+        library.returnBook(book.getId(), reader.getId());
 
         assertEquals(BookStatus.AVAILABLE, book.getStatus());
         assertNull(book.getBorrowedByID());
@@ -111,9 +111,9 @@ class LibraryServiceTest {
         Book book2 = library.getBookByID(2L);
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
-        library.borrowBook(book1.getId(), reader.getID());
+        library.borrowBook(book1.getId(), reader.getId());
 
-        assertThrows(LibraryException.class, () -> library.returnBook(book2.getId(), reader.getID()));
+        assertThrows(LibraryException.class, () -> library.returnBook(book2.getId(), reader.getId()));
     }
 
     @Test
@@ -125,9 +125,9 @@ class LibraryServiceTest {
         library.registerReader("Nick");
         Reader reader2 = library.getReaderByID(2L);
 
-        library.borrowBook(book1.getId(), reader1.getID());
+        library.borrowBook(book1.getId(), reader1.getId());
 
-        assertThrows(LibraryException.class, () -> library.returnBook(book1.getId(), reader2.getID()));
+        assertThrows(LibraryException.class, () -> library.returnBook(book1.getId(), reader2.getId()));
     }
 
     @Test
@@ -150,7 +150,7 @@ class LibraryServiceTest {
         Book book3 = library.getBookByID(3L);
         library.registerReader("Adelina");
         Reader reader1 = library.getReaderByID(1L);
-        library.borrowBook(book3.getId(), reader1.getID());
+        library.borrowBook(book3.getId(), reader1.getId());
 
         assertEquals(2, library.findAvailableBooks().size());
     }
@@ -165,10 +165,10 @@ class LibraryServiceTest {
         Book book3 = library.getBookByID(3L);
         library.registerReader("Adelina");
         Reader reader1 = library.getReaderByID(1L);
-        library.borrowBook(book1.getId(), reader1.getID());
-        library.borrowBook(book2.getId(), reader1.getID());
+        library.borrowBook(book1.getId(), reader1.getId());
+        library.borrowBook(book2.getId(), reader1.getId());
 
-        assertEquals(2, library.findBooksThatReaderHave(reader1.getID()).size());
+        assertEquals(2, library.findBooksThatReaderHave(reader1.getId()).size());
     }
 
     @Test
@@ -176,7 +176,7 @@ class LibraryServiceTest {
         library.registerReader("Adelina");
         Reader reader1 = library.getReaderByID(1L);
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(1L, reader1.getID()));
+        assertThrows(LibraryException.class, () -> library.borrowBook(1L, reader1.getId()));
     }
 
     @Test
