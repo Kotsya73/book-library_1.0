@@ -7,6 +7,8 @@ import com.library.model.Reader;
 
 import java.util.*;
 
+
+
 public class LibraryService {
 
     private Map <Long, Book> bookStorage = new HashMap<Long, Book>();
@@ -17,12 +19,20 @@ public class LibraryService {
     private long readerCounterForID = 1;
 
     public void addBook(String title, String author){
+        if (title == null || title.isBlank()) {
+            throw new LibraryException("Title can not be empty!");
+        }else if (author == null || author.isBlank()) {
+            throw new LibraryException("Author can not be empty!");
+        }
         Book book= new Book(bookCounterForID, title, author, BookStatus.AVAILABLE, null);
         bookStorage.put (book.getId(), book);
         bookCounterForID ++;
     }
 
     public void registerReader(String name){
+        if(name == null || name.isBlank()){
+            throw new LibraryException("Name can not be empty!");
+        }
         Reader reader = new Reader(readerCounterForID, name);
         readerStorage.put(readerCounterForID, reader);
         readerBooks.put(readerCounterForID, new ArrayList<>());

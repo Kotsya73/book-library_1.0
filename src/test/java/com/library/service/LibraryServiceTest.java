@@ -18,6 +18,18 @@ class LibraryServiceTest {
     }
 
     @Test
+    void addBook_shouldThrowExceptionIfNoTitle(){
+        assertThrows(LibraryException.class, () -> library.addBook("", "George Orwell"));
+        assertThrows(LibraryException.class, () -> library.addBook("  ", "Charles Darwin"));
+    }
+
+    @Test
+    void addBook_shouldThrowExceptionIfNoAuthor(){
+        assertThrows(LibraryException.class, () -> library.addBook("1984", ""));
+        assertThrows(LibraryException.class, () -> library.addBook("On the Origin of Species", "  "));
+    }
+
+    @Test
     void addBook_shouldAddBookToStorage(){
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
@@ -34,6 +46,12 @@ class LibraryServiceTest {
         Book book2 = library.getBookByID(2L);
 
         assertEquals(2L, book2.getId());
+    }
+
+    @Test
+    void registerReader_shouldThrowExceptionNoName(){
+        assertThrows(LibraryException.class, () -> library.registerReader(""));
+        assertThrows(LibraryException.class, () -> library.registerReader(" "));
     }
 
     @Test
