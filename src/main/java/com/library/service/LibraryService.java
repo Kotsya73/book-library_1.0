@@ -104,12 +104,5 @@ public class LibraryService {
     public Reader getReaderByID(Long id){
         return readerStorage.get(id);
     }
-
-    public long getBookCounterForID(){
-        return bookCounterForID;
-    }
-    public long getReaderCounterForID(){
-        return  readerCounterForID;
-    }
 }
 

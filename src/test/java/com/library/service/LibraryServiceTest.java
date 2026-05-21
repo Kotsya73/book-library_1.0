@@ -29,7 +29,11 @@ class LibraryServiceTest {
     @Test
     void addBook_shouldChangeCounter(){
         library.addBook("1984", "George Orwell");
-        assertEquals(2, library.getBookCounterForID());
+        Book book1 = library.getBookByID(1L);
+        library.addBook("On the Origin of Species", "Charles Darwin");
+        Book book2 = library.getBookByID(2L);
+
+        assertEquals(2L, book2.getId());
     }
 
     @Test
@@ -43,7 +47,11 @@ class LibraryServiceTest {
     @Test
     void registerReader_shouldChangeCounter(){
         library.registerReader("Adelina");
-        assertEquals(2, library.getReaderCounterForID());
+        library.registerReader("Nick");
+        Reader reader1 = library.getReaderByID(1L);
+        Reader reader2 = library.getReaderByID(2L);
+
+        assertEquals(2L, reader2.getId());
     }
 
     @Test
