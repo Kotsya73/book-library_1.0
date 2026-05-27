@@ -4,17 +4,24 @@ import com.library.exception.LibraryException;
 import com.library.model.Book;
 import com.library.model.BookStatus;
 import com.library.model.Reader;
+import com.library.repository.BookRepository;
+import com.library.repository.ReaderRepository;
 
 import java.util.*;
 
 // Split to repository
 public class LibraryService {
-    private final Map<Long, Book> bookStorage = new HashMap<>();
-    private final Map<Long, Reader> readerStorage = new HashMap<>();
-    private final Map<Long, List<Long>> readerBooks = new HashMap<>();
+
+    private final BookRepository bookRepository;
+    private final ReaderRepository readerRepository;
 
     private long bookCounterForID = 1;
     private long readerCounterForID = 1;
+
+    public LibraryService(BookRepository bookRepository, ReaderRepository readerRepository) {
+        this.bookRepository = bookRepository;
+        this.readerRepository = readerRepository;
+    }
 
     public void addBook(String title, String author) {
         if (title == null || title.isBlank()) {
@@ -23,7 +30,7 @@ public class LibraryService {
             throw new LibraryException("Author can not be empty!");
         }
         Book book = new Book(bookCounterForID, title, author, BookStatus.AVAILABLE, null);
-        bookStorage.put(book.getId(), book);
+        bookRepository.saveBook(book);
         bookCounterForID++;
     }
 
@@ -32,8 +39,8 @@ public class LibraryService {
             throw new LibraryException("Name can not be empty!");
         }
         Reader reader = new Reader(readerCounterForID, name);
-        readerStorage.put(readerCounterForID, reader);
-        readerBooks.put(readerCounterForID, new ArrayList<>());
+        readerRepository.saveReader(reader);
+        readerRepository.initReaderBooks(readerCounterForID);
 
         readerCounterForID++;
     }
@@ -45,7 +52,7 @@ public class LibraryService {
         if (book.getStatus() == BookStatus.BORROWED) {
             throw new LibraryException("Book is already borrowed");
         }
-        List<Long> booksThatReaderHave = readerBooks.get(readerID);
+        List<Long> booksThatReaderHave = readerRepository.getReaderBooks(readerID);
         if (booksThatReaderHave.size() >= 3) {
             throw new LibraryException("Reader already have max amount of books!");
         }
@@ -66,31 +73,31 @@ public class LibraryService {
         }
         book.setStatus(BookStatus.AVAILABLE);
         book.setBorrowedByID(null);
-        List<Long> booksThatReaderHave = readerBooks.get(readerID);
+        List<Long> booksThatReaderHave = readerRepository.getReaderBooks(readerID);
         booksThatReaderHave.remove(book.getId());
     }
 
     public List<Book> findBooksByAuthor(String author) {
-        return bookStorage.values().stream()
+        return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getAuthor().equals(author))
                 .toList();
     }
 
     public List<Book> findAvailableBooks() {
-        return bookStorage.values().stream()
+        return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getStatus() == BookStatus.AVAILABLE)
                 .toList();
     }
 
     public List<Book> findBooksThatReaderHave(Long readerID) {
-        return bookStorage.values().stream()
+        return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getStatus() == BookStatus.BORROWED &&
                         book.getBorrowedByID().equals(readerID))
                 .toList();
     }
 
     private Book findBookOrThrow(Long bookID) {
-        var book = bookStorage.get(bookID);
+        var book = bookRepository.getBookById(bookID);
         if (book == null) {
             throw new LibraryException("Book with ID" + bookID + " not found");
         }
@@ -98,7 +105,7 @@ public class LibraryService {
     }
 
     private Reader findReaderOrThrow(Long readerID) {
-        var reader = readerStorage.get(readerID);
+        var reader = readerRepository.getReaderById(readerID);
         if (reader == null) {
             throw new LibraryException("Reader with ID" + readerID + " not found");
         }
@@ -106,11 +113,11 @@ public class LibraryService {
     }
 
     public Book getBookByID(Long id) {
-        return bookStorage.get(id);
+        return bookRepository.getBookById(id);
     }
 
     public Reader getReaderByID(Long id) {
-        return readerStorage.get(id);
+        return readerRepository.getReaderById(id);
     }
 }
 

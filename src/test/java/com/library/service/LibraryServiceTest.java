@@ -4,6 +4,8 @@ import com.library.exception.LibraryException;
 import com.library.model.Book;
 import com.library.model.BookStatus;
 import com.library.model.Reader;
+import com.library.repository.BookRepository;
+import com.library.repository.ReaderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +18,7 @@ class LibraryServiceTest {
 
     @BeforeEach
     void setUp() {
-        library = new LibraryService();
+        library = new LibraryService(new BookRepository(), new ReaderRepository());
     }
 
     @Test
