@@ -6,8 +6,10 @@ import com.library.model.BookStatus;
 import com.library.model.Reader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+// replace assertions with assertThat() -> add assertJ to maven
 class LibraryServiceTest {
 
     private LibraryService library;
@@ -18,19 +20,19 @@ class LibraryServiceTest {
     }
 
     @Test
-    void addBook_shouldThrowExceptionIfNoTitle(){
+    void addBook_shouldThrowExceptionIfNoTitle() {
         assertThrows(LibraryException.class, () -> library.addBook("", "George Orwell"));
         assertThrows(LibraryException.class, () -> library.addBook("  ", "Charles Darwin"));
     }
 
     @Test
-    void addBook_shouldThrowExceptionIfNoAuthor(){
+    void addBook_shouldThrowExceptionIfNoAuthor() {
         assertThrows(LibraryException.class, () -> library.addBook("1984", ""));
         assertThrows(LibraryException.class, () -> library.addBook("On the Origin of Species", "  "));
     }
 
     @Test
-    void addBook_shouldAddBookToStorage(){
+    void addBook_shouldAddBookToStorage() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
         assertNotNull(book);
@@ -39,7 +41,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void addBook_shouldChangeCounter(){
+    void addBook_shouldChangeCounter() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("On the Origin of Species", "Charles Darwin");
@@ -49,13 +51,13 @@ class LibraryServiceTest {
     }
 
     @Test
-    void registerReader_shouldThrowExceptionNoName(){
+    void registerReader_shouldThrowExceptionNoName() {
         assertThrows(LibraryException.class, () -> library.registerReader(""));
         assertThrows(LibraryException.class, () -> library.registerReader(" "));
     }
 
     @Test
-    void registerReader_shouldAddReaderToStorage(){
+    void registerReader_shouldAddReaderToStorage() {
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
         assertNotNull(reader);
@@ -63,7 +65,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void registerReader_shouldChangeCounter(){
+    void registerReader_shouldChangeCounter() {
         library.registerReader("Adelina");
         library.registerReader("Nick");
         Reader reader1 = library.getReaderByID(1L);
@@ -73,7 +75,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void borrowBook_shouldChangeStatus(){
+    void borrowBook_shouldChangeStatus() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
         library.registerReader("Adelina");
@@ -84,7 +86,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void borrowBook_shouldThrowExceptionBorrowed(){
+    void borrowBook_shouldThrowExceptionBorrowed() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
         library.registerReader("Adelina");
@@ -97,7 +99,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void borrowBook_shouldThrowExceptionLimit(){
+    void borrowBook_shouldThrowExceptionLimit() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("On the Origin of Species", "Charles Darwin");
@@ -117,7 +119,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void returnBook_shouldChangeStatus(){
+    void returnBook_shouldChangeStatus() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
         library.registerReader("Adelina");
@@ -130,7 +132,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void returnBook_shouldThrowExceptionStatus(){
+    void returnBook_shouldThrowExceptionStatus() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("On the Origin of Species", "Charles Darwin");
@@ -143,7 +145,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void returnBook_shouldThrowExceptionReader(){
+    void returnBook_shouldThrowExceptionReader() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.registerReader("Adelina");
@@ -157,7 +159,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void findBooksByAuthor_shouldBeRightSize(){
+    void findBooksByAuthor_shouldBeRightSize() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("Animal Farm", "George Orwell");
@@ -167,7 +169,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void findAvailableBooks_shouldBeRightSize(){
+    void findAvailableBooks_shouldBeRightSize() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("Animal Farm", "George Orwell");
@@ -182,7 +184,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void findBooksThatReaderHave_shouldBeRightSize(){
+    void findBooksThatReaderHave_shouldBeRightSize() {
         library.addBook("1984", "George Orwell");
         Book book1 = library.getBookByID(1L);
         library.addBook("Animal Farm", "George Orwell");
@@ -198,7 +200,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void findBookOrThrow_shouldThrowException(){
+    void findBookOrThrow_shouldThrowException() {
         library.registerReader("Adelina");
         Reader reader1 = library.getReaderByID(1L);
 
@@ -206,7 +208,7 @@ class LibraryServiceTest {
     }
 
     @Test
-    void findReaderOrThrow_shouldThrowException(){
+    void findReaderOrThrow_shouldThrowException() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
         assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), 1L));
