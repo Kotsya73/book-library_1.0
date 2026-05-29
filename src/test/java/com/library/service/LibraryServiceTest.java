@@ -9,7 +9,8 @@ import com.library.repository.ReaderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+
 
 // replace assertions with assertThat() -> add assertJ to maven
 class LibraryServiceTest {
@@ -23,23 +24,23 @@ class LibraryServiceTest {
 
     @Test
     void addBook_shouldThrowExceptionIfNoTitle() {
-        assertThrows(LibraryException.class, () -> library.addBook("", "George Orwell"));
-        assertThrows(LibraryException.class, () -> library.addBook("  ", "Charles Darwin"));
+        assertThatThrownBy(() -> library.addBook("", "George Orwell")).isInstanceOf(LibraryException.class);
+        assertThatThrownBy(() -> library.addBook("  ", "Charles Darwin")).isInstanceOf(LibraryException.class);
     }
 
     @Test
     void addBook_shouldThrowExceptionIfNoAuthor() {
-        assertThrows(LibraryException.class, () -> library.addBook("1984", ""));
-        assertThrows(LibraryException.class, () -> library.addBook("On the Origin of Species", "  "));
+        assertThatThrownBy(() -> library.addBook("1984", "")).isInstanceOf(LibraryException.class);
+        assertThatThrownBy(() -> library.addBook("On the Origin of Species", "  ")).isInstanceOf(LibraryException.class);
     }
 
     @Test
     void addBook_shouldAddBookToStorage() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
-        assertNotNull(book);
-        assertEquals("1984", book.getTitle());
-        assertEquals("George Orwell", book.getAuthor());
+        assertThat(book).isNotNull();
+        assertThat(book.getTitle()).isEqualTo("1984");
+        assertThat(book.getAuthor()).isEqualTo("George Orwell");
     }
 
     @Test
@@ -49,21 +50,21 @@ class LibraryServiceTest {
         library.addBook("On the Origin of Species", "Charles Darwin");
         Book book2 = library.getBookByID(2L);
 
-        assertEquals(2L, book2.getId());
+        assertThat(book2.getId()).isEqualTo(2L);
     }
 
     @Test
     void registerReader_shouldThrowExceptionNoName() {
-        assertThrows(LibraryException.class, () -> library.registerReader(""));
-        assertThrows(LibraryException.class, () -> library.registerReader(" "));
+        assertThatThrownBy(() -> library.registerReader("")).isInstanceOf(LibraryException.class);
+        assertThatThrownBy(() -> library.registerReader(" ")).isInstanceOf(LibraryException.class);
     }
 
     @Test
     void registerReader_shouldAddReaderToStorage() {
         library.registerReader("Adelina");
         Reader reader = library.getReaderByID(1L);
-        assertNotNull(reader);
-        assertEquals("Adelina", reader.getName());
+        assertThat(reader).isNotNull();
+        assertThat(reader.getName()).isEqualTo("Adelina");
     }
 
     @Test
@@ -73,7 +74,7 @@ class LibraryServiceTest {
         Reader reader1 = library.getReaderByID(1L);
         Reader reader2 = library.getReaderByID(2L);
 
-        assertEquals(2L, reader2.getId());
+        assertThat(reader2.getId()).isEqualTo(2L);
     }
 
     @Test
@@ -84,7 +85,7 @@ class LibraryServiceTest {
         Reader reader = library.getReaderByID(1L);
         library.borrowBook(book.getId(), reader.getId());
 
-        assertEquals(BookStatus.BORROWED, book.getStatus());
+        assertThat(book.getStatus()).isEqualTo(BookStatus.BORROWED);
     }
 
     @Test
@@ -97,7 +98,7 @@ class LibraryServiceTest {
         Reader reader2 = library.getReaderByID(2L);
         library.borrowBook(book.getId(), reader1.getId());
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), reader2.getId()));
+        assertThatThrownBy(() -> library.borrowBook(book.getId(), reader2.getId())).isInstanceOf(LibraryException.class);
     }
 
     @Test
@@ -117,7 +118,7 @@ class LibraryServiceTest {
         library.borrowBook(book2.getId(), reader.getId());
         library.borrowBook(book3.getId(), reader.getId());
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(book4.getId(), reader.getId()));
+        assertThatThrownBy(() -> library.borrowBook(book4.getId(), reader.getId())).isInstanceOf(LibraryException.class);
     }
 
     @Test
@@ -129,8 +130,8 @@ class LibraryServiceTest {
         library.borrowBook(book.getId(), reader.getId());
         library.returnBook(book.getId(), reader.getId());
 
-        assertEquals(BookStatus.AVAILABLE, book.getStatus());
-        assertNull(book.getBorrowedByID());
+        assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+        assertThat(book.getBorrowedByID()).isNull();
     }
 
     @Test
@@ -143,7 +144,7 @@ class LibraryServiceTest {
         Reader reader = library.getReaderByID(1L);
         library.borrowBook(book1.getId(), reader.getId());
 
-        assertThrows(LibraryException.class, () -> library.returnBook(book2.getId(), reader.getId()));
+        assertThatThrownBy(() -> library.returnBook(book2.getId(), reader.getId())).isInstanceOf(LibraryException.class);
     }
 
     @Test
@@ -157,7 +158,7 @@ class LibraryServiceTest {
 
         library.borrowBook(book1.getId(), reader1.getId());
 
-        assertThrows(LibraryException.class, () -> library.returnBook(book1.getId(), reader2.getId()));
+        assertThatThrownBy(() -> library.returnBook(book1.getId(), reader2.getId())).isInstanceOf(LibraryException.class);
     }
 
     @Test
@@ -167,7 +168,7 @@ class LibraryServiceTest {
         library.addBook("Animal Farm", "George Orwell");
         Book book2 = library.getBookByID(2L);
 
-        assertEquals(2, library.findBooksByAuthor("George Orwell").size());
+        assertThat(library.findBooksByAuthor("George Orwell").size()).isEqualTo(2);
     }
 
     @Test
@@ -182,7 +183,7 @@ class LibraryServiceTest {
         Reader reader1 = library.getReaderByID(1L);
         library.borrowBook(book3.getId(), reader1.getId());
 
-        assertEquals(2, library.findAvailableBooks().size());
+        assertThat(library.findAvailableBooks().size()).isEqualTo(2);
     }
 
     @Test
@@ -198,7 +199,7 @@ class LibraryServiceTest {
         library.borrowBook(book1.getId(), reader1.getId());
         library.borrowBook(book2.getId(), reader1.getId());
 
-        assertEquals(2, library.findBooksThatReaderHave(reader1.getId()).size());
+        assertThat(library.findBooksThatReaderHave(reader1.getId()).size()).isEqualTo(2);
     }
 
     @Test
@@ -206,13 +207,14 @@ class LibraryServiceTest {
         library.registerReader("Adelina");
         Reader reader1 = library.getReaderByID(1L);
 
-        assertThrows(LibraryException.class, () -> library.borrowBook(1L, reader1.getId()));
+        assertThatThrownBy(() -> library.borrowBook(1L, reader1.getId())).isInstanceOf(LibraryException.class);
     }
 
     @Test
     void findReaderOrThrow_shouldThrowException() {
         library.addBook("1984", "George Orwell");
         Book book = library.getBookByID(1L);
-        assertThrows(LibraryException.class, () -> library.borrowBook(book.getId(), 1L));
+
+        assertThatThrownBy(() -> library.borrowBook(book.getId(), 1L)).isInstanceOf(LibraryException.class);
     }
 }
