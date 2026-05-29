@@ -15,8 +15,6 @@ public class LibraryService {
     private final BookRepository bookRepository;
     private final ReaderRepository readerRepository;
 
-    private long bookCounterForID = 1;
-    private long readerCounterForID = 1;
 
     public LibraryService(BookRepository bookRepository, ReaderRepository readerRepository) {
         this.bookRepository = bookRepository;
@@ -29,20 +27,17 @@ public class LibraryService {
         } else if (author == null || author.isBlank()) {
             throw new LibraryException("Author can not be empty!");
         }
-        Book book = new Book(bookCounterForID, title, author, BookStatus.AVAILABLE, null);
+        Book book = new Book(null, title, author, BookStatus.AVAILABLE, null);
         bookRepository.saveBook(book);
-        bookCounterForID++;
     }
 
     public void registerReader(String name) {
         if (name == null || name.isBlank()) {
             throw new LibraryException("Name can not be empty!");
         }
-        Reader reader = new Reader(readerCounterForID, name);
+        Reader reader = new Reader(null, name);
         readerRepository.saveReader(reader);
-        readerRepository.initReaderBooks(readerCounterForID);
-
-        readerCounterForID++;
+        readerRepository.initReaderBooks(reader.getId());
     }
 
     public void borrowBook(Long bookID, Long readerID) {

@@ -5,10 +5,10 @@ import com.library.model.Book;
 import java.util.*;
 
 public class BookRepository {
-    private final Map<Long, Book> bookStorage = new HashMap<>();
+    private final AutoIncrementMap<Book> bookStorage = new AutoIncrementMap<>();
 
     public void saveBook(Book book) {
-        bookStorage.put(book.getId(), book);
+        bookStorage.put(book);
     }
 
     public Book getBookById(Long bookId) {
@@ -16,6 +16,6 @@ public class BookRepository {
     }
 
     public List<Book> getAllBooks() {
-        return new ArrayList<>(bookStorage.values());
+        return new ArrayList<>(bookStorage.getAll());
     }
 }
